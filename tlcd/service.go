@@ -1,4 +1,4 @@
-package lcd
+package tlcd
 
 import (
 	"flag"
@@ -7,9 +7,9 @@ import (
 	"path/filepath"
 
 	"github.com/kardianos/service"
-	"github.com/lwch/lcmd/proto"
 	"github.com/lwch/logging"
 	"github.com/lwch/runtime"
+	"github.com/lwch/tlc/proto"
 	"google.golang.org/grpc"
 )
 
@@ -28,8 +28,8 @@ func Do() {
 	}
 
 	cfg := &service.Config{
-		Name:        "lcd",
-		DisplayName: "lcd",
+		Name:        "tlcd",
+		DisplayName: "tlcd",
 		Description: "tiny linux container",
 		Arguments:   []string{"service"},
 	}
@@ -47,7 +47,7 @@ func Do() {
 	case "install":
 		runtime.Assert(sv.Install())
 	default:
-		logging.SetSizeRotate(filepath.Join(workDir, "logs"), "lcd", 10*1024*1024, 7, false)
+		logging.SetSizeRotate(filepath.Join(workDir, "logs"), "tlcd", 10*1024*1024, 7, false)
 		runtime.Assert(sv.Run())
 	}
 }
@@ -59,7 +59,7 @@ type Service struct {
 }
 
 func (sv *Service) listen() (net.Listener, error) {
-	dir := filepath.Join(sv.WorkDir, "lcd.sock")
+	dir := filepath.Join(sv.WorkDir, "tlcd.sock")
 	os.Remove(dir)
 	return net.Listen("unix", dir)
 }
@@ -86,7 +86,7 @@ func (sv *Service) Start(s service.Service) error {
 func (sv *Service) Stop(s service.Service) error {
 	if sv.listener != nil {
 		sv.listener.Close()
-		os.Remove(filepath.Join(sv.WorkDir, "lcd.sock"))
+		os.Remove(filepath.Join(sv.WorkDir, "tlcd.sock"))
 	}
 	return nil
 }

@@ -5,7 +5,11 @@ package proto;
 option go_package="./;proto";
 
 message CreateConfig {
+    string  dir = 1;
+    string name = 2;
 }
 
 message CreateResponse {
+    bool   ok = 1;
+    string id = 2;
 }

@@ -1,4 +1,4 @@
-module github.com/lwch/lcmd
+module github.com/lwch/tlc
 
 go 1.16
 

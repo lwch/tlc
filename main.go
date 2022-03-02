@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	"github.com/lwch/lcmd/lcd"
+	"github.com/lwch/tlc/tlcd"
 )
 
 func usage() {
@@ -22,6 +22,6 @@ func main() {
 	case "stop":
 	case "attach":
 	case "service":
-		lcd.Do()
+		tlcd.Do()
 	}
 }

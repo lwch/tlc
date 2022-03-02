@@ -1,2 +1,2 @@
 #!/bin/sh
-go build -o bin/lcmd main.go
+go build -o bin/tlc main.go
