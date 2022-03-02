@@ -1,6 +1,10 @@
 package main
 
-import "os"
+import (
+	"os"
+
+	"github.com/lwch/lcmd/lcd"
+)
 
 func usage() {
 }
@@ -8,7 +12,7 @@ func usage() {
 func main() {
 	if len(os.Args) < 2 {
 		usage()
-		os.Exit(1)
+		os.Exit(0)
 	}
 
 	switch os.Args[1] {
@@ -17,5 +21,7 @@ func main() {
 	case "start":
 	case "stop":
 	case "attach":
+	case "service":
+		lcd.Do()
 	}
 }
