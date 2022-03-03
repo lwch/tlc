@@ -5,12 +5,12 @@ package proto;
 option go_package="./;proto";
 
 message RunConfig {
-    string       img = 1;
-    string       dir = 2;
-    string      name = 3;
-    bool          rm = 4;
-    bool interactive = 5;
-    bool         tty = 6;
+    string   img = 1;
+    string   dir = 2;
+    string  name = 3;
+    bool      rm = 4;
+    bool  daemon = 5;
+    bool     tty = 6;
 }
 
 message RunResponse {

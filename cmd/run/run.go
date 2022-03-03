@@ -1,14 +1,17 @@
 package run
 
 import (
+	"context"
 	"fmt"
 	"os"
 
+	"github.com/lwch/runtime"
+	link "github.com/lwch/tlc/cmd"
+	"github.com/lwch/tlc/proto"
 	"github.com/spf13/cobra"
 )
 
 var daemon bool
-var stdin bool
 var tty bool
 var name string
 var remove bool
@@ -25,9 +28,8 @@ func RegCmd(root *cobra.Command) {
   --dir argument supported container directory of container.yaml config file`,
 		Run: do,
 	}
-	cmd.Flags().BoolVarP(&daemon, "detach", "d", false, "Run container in background and print container ID")
-	cmd.Flags().BoolVarP(&stdin, "interactive", "i", false, "Keep STDIN open even if not attached")
-	cmd.Flags().BoolVarP(&tty, "tty", "t", false, "Allocate a pseudo-TTY")
+	cmd.Flags().BoolVarP(&daemon, "daemon", "d", false, "Run container in background and print container ID")
+	cmd.Flags().BoolVar(&tty, "tty", false, "Allocate a pseudo-TTY")
 	cmd.Flags().StringVar(&name, "name", "", "Assign a name to the container")
 	cmd.Flags().BoolVar(&remove, "rm", false, "Automatically remove the container when it exits")
 	cmd.Flags().StringVar(&img, "img", "", "Image file directory")
@@ -40,4 +42,18 @@ func do(cmd *cobra.Command, args []string) {
 		fmt.Println("missing --img or --dir")
 		os.Exit(1)
 	}
+	cfg := proto.RunConfig{
+		Img:    img,
+		Dir:    dir,
+		Name:   name,
+		Rm:     remove,
+		Daemon: daemon,
+		Tty:    tty,
+	}
+	cli, cancel, err := link.Connect()
+	runtime.Assert(err)
+	defer cancel()
+	resp, err := cli.Run(context.Background(), &cfg)
+	runtime.Assert(err)
+	fmt.Println(resp.String())
 }

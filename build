@@ -1,2 +1,3 @@
 #!/bin/sh
 go build -o bin/tlc main.go
+go build -o bin/demo demo/main.go

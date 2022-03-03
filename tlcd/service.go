@@ -4,6 +4,7 @@ import (
 	"net"
 	"os"
 	"path/filepath"
+	"sync"
 
 	"github.com/kardianos/service"
 	"github.com/lwch/logging"
@@ -57,9 +58,11 @@ func RegCmd(root *cobra.Command) {
 
 // Service container control service
 type Service struct {
+	sync.RWMutex
 	WorkDir    string
 	Executable string
 	listener   net.Listener
+	containers map[string]*Container
 }
 
 func (sv *Service) listen() (net.Listener, error) {
