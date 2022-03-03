@@ -4,8 +4,8 @@ package proto;
 
 option go_package="./;proto";
 
-import "create.proto";
+import "run.proto";
 
 service Service {
-    rpc Create(CreateConfig) returns(CreateResponse);
+    rpc Run(RunConfig) returns(RunResponse);
 }

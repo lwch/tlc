@@ -1,7 +1,6 @@
 package tlcd
 
 import (
-	"flag"
 	"net"
 	"os"
 	"path/filepath"
@@ -10,52 +9,57 @@ import (
 	"github.com/lwch/logging"
 	"github.com/lwch/runtime"
 	"github.com/lwch/tlc/proto"
+	"github.com/spf13/cobra"
 	"google.golang.org/grpc"
 )
 
-func usage() {
-}
-
-// Do run service commands
-func Do() {
-	set := flag.NewFlagSet("service", flag.PanicOnError)
-	help := flag.Bool("h", false, "show help info")
-	runtime.Assert(set.Parse(os.Args[2:]))
-
-	if *help {
-		usage()
-		os.Exit(0)
-	}
-
+// RegCmd register service command
+func RegCmd(root *cobra.Command) {
 	cfg := &service.Config{
 		Name:        "tlcd",
 		DisplayName: "tlcd",
 		Description: "tiny linux container",
-		Arguments:   []string{"service"},
+		Arguments:   []string{"service", "run"},
 	}
 
 	exeDir, err := os.Executable()
 	runtime.Assert(err)
 	workDir := filepath.Dir(exeDir)
 
-	sv, err := service.New(&Service{
-		WorkDir: workDir,
+	svc, err := service.New(&Service{
+		WorkDir:    workDir,
+		Executable: exeDir,
 	}, cfg)
 	runtime.Assert(err)
 
-	switch set.Arg(0) {
-	case "install":
-		runtime.Assert(sv.Install())
-	default:
-		logging.SetSizeRotate(filepath.Join(workDir, "logs"), "tlcd", 10*1024*1024, 7, false)
-		runtime.Assert(sv.Run())
+	cmd := &cobra.Command{
+		Use:   "service",
+		Short: "service control",
 	}
+	cmd.AddCommand(&cobra.Command{
+		Use:   "install",
+		Short: "register tlc service",
+		Run: func(*cobra.Command, []string) {
+			runtime.Assert(svc.Install())
+		},
+	})
+	cmd.AddCommand(&cobra.Command{
+		Use:   "run",
+		Short: "run tlc service",
+		Run: func(*cobra.Command, []string) {
+			logging.SetSizeRotate(filepath.Join(workDir, "logs"),
+				"tlcd", 10*1024*1024, 7, false)
+			runtime.Assert(svc.Run())
+		},
+	})
+	root.AddCommand(cmd)
 }
 
 // Service container control service
 type Service struct {
-	WorkDir  string
-	listener net.Listener
+	WorkDir    string
+	Executable string
+	listener   net.Listener
 }
 
 func (sv *Service) listen() (net.Listener, error) {

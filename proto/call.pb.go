@@ -27,22 +27,21 @@ var File_call_proto protoreflect.FileDescriptor
 
 var file_call_proto_rawDesc = []byte{
 	0x0a, 0x0a, 0x63, 0x61, 0x6c, 0x6c, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x05, 0x70, 0x72,
-	0x6f, 0x74, 0x6f, 0x1a, 0x0c, 0x63, 0x72, 0x65, 0x61, 0x74, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74,
-	0x6f, 0x32, 0x3f, 0x0a, 0x07, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12, 0x34, 0x0a, 0x06,
-	0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x12, 0x13, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x43,
-	0x72, 0x65, 0x61, 0x74, 0x65, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x1a, 0x15, 0x2e, 0x70, 0x72,
-	0x6f, 0x74, 0x6f, 0x2e, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
-	0x73, 0x65, 0x42, 0x0a, 0x5a, 0x08, 0x2e, 0x2f, 0x3b, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06,
-	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x6f, 0x74, 0x6f, 0x1a, 0x09, 0x72, 0x75, 0x6e, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x32, 0x36,
+	0x0a, 0x07, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12, 0x2b, 0x0a, 0x03, 0x52, 0x75, 0x6e,
+	0x12, 0x10, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x52, 0x75, 0x6e, 0x43, 0x6f, 0x6e, 0x66,
+	0x69, 0x67, 0x1a, 0x12, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x52, 0x75, 0x6e, 0x52, 0x65,
+	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x42, 0x0a, 0x5a, 0x08, 0x2e, 0x2f, 0x3b, 0x70, 0x72, 0x6f,
+	0x74, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var file_call_proto_goTypes = []interface{}{
-	(*CreateConfig)(nil),   // 0: proto.CreateConfig
-	(*CreateResponse)(nil), // 1: proto.CreateResponse
+	(*RunConfig)(nil),   // 0: proto.RunConfig
+	(*RunResponse)(nil), // 1: proto.RunResponse
 }
 var file_call_proto_depIdxs = []int32{
-	0, // 0: proto.Service.Create:input_type -> proto.CreateConfig
-	1, // 1: proto.Service.Create:output_type -> proto.CreateResponse
+	0, // 0: proto.Service.Run:input_type -> proto.RunConfig
+	1, // 1: proto.Service.Run:output_type -> proto.RunResponse
 	1, // [1:2] is the sub-list for method output_type
 	0, // [0:1] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
@@ -55,7 +54,7 @@ func file_call_proto_init() {
 	if File_call_proto != nil {
 		return
 	}
-	file_create_proto_init()
+	file_run_proto_init()
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
@@ -87,7 +86,7 @@ const _ = grpc.SupportPackageIsVersion6
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type ServiceClient interface {
-	Create(ctx context.Context, in *CreateConfig, opts ...grpc.CallOption) (*CreateResponse, error)
+	Run(ctx context.Context, in *RunConfig, opts ...grpc.CallOption) (*RunResponse, error)
 }
 
 type serviceClient struct {
@@ -98,9 +97,9 @@ func NewServiceClient(cc grpc.ClientConnInterface) ServiceClient {
 	return &serviceClient{cc}
 }
 
-func (c *serviceClient) Create(ctx context.Context, in *CreateConfig, opts ...grpc.CallOption) (*CreateResponse, error) {
-	out := new(CreateResponse)
-	err := c.cc.Invoke(ctx, "/proto.Service/Create", in, out, opts...)
+func (c *serviceClient) Run(ctx context.Context, in *RunConfig, opts ...grpc.CallOption) (*RunResponse, error) {
+	out := new(RunResponse)
+	err := c.cc.Invoke(ctx, "/proto.Service/Run", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -109,35 +108,35 @@ func (c *serviceClient) Create(ctx context.Context, in *CreateConfig, opts ...gr
 
 // ServiceServer is the server API for Service service.
 type ServiceServer interface {
-	Create(context.Context, *CreateConfig) (*CreateResponse, error)
+	Run(context.Context, *RunConfig) (*RunResponse, error)
 }
 
 // UnimplementedServiceServer can be embedded to have forward compatible implementations.
 type UnimplementedServiceServer struct {
 }
 
-func (*UnimplementedServiceServer) Create(context.Context, *CreateConfig) (*CreateResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Create not implemented")
+func (*UnimplementedServiceServer) Run(context.Context, *RunConfig) (*RunResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Run not implemented")
 }
 
 func RegisterServiceServer(s *grpc.Server, srv ServiceServer) {
 	s.RegisterService(&_Service_serviceDesc, srv)
 }
 
-func _Service_Create_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreateConfig)
+func _Service_Run_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RunConfig)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ServiceServer).Create(ctx, in)
+		return srv.(ServiceServer).Run(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/proto.Service/Create",
+		FullMethod: "/proto.Service/Run",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ServiceServer).Create(ctx, req.(*CreateConfig))
+		return srv.(ServiceServer).Run(ctx, req.(*RunConfig))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -147,8 +146,8 @@ var _Service_serviceDesc = grpc.ServiceDesc{
 	HandlerType: (*ServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "Create",
-			Handler:    _Service_Create_Handler,
+			MethodName: "Run",
+			Handler:    _Service_Run_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
