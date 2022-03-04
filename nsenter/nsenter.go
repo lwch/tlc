@@ -15,8 +15,8 @@ __attribute__((constructor)) void enter_mnt() {
 	char* pid = getenv("CT_PID");
 	if (pid) {
 		char str[256] = {0};
-		char *namespaces[] = { "uts", "mnt" };
-		for (int i = 0; i < 2; i++) {
+		char *namespaces[] = { "uts", "pid", "mnt" };
+		for (int i = 0; i < sizeof(namespaces); i++) {
 			sprintf(str, "/proc/%s/ns/%s", pid, namespaces[i]);
 			int fd = open(str, O_RDONLY);
 			assert(fd >= 0);
