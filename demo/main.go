@@ -41,8 +41,8 @@ func child() {
 	runtime.Assert(os.Chdir(rootfs))
 	runtime.Assert(syscall.Chroot(rootfs))
 	runtime.Assert(syscall.Mount("proc", "/proc", "proc", 0, ""))
-	runtime.Assert(syscall.Exec("/bin/bash",
-		[]string{"/bin/bash"}, os.Environ()))
+	runtime.Assert(syscall.Exec("/sbin/init",
+		[]string{"/sbin/init"}, os.Environ()))
 }
 
 func enter(dir, name string) {

@@ -1,48 +1,45 @@
 package tlcd
 
 import (
+	"encoding/json"
 	"os"
+	"os/exec"
 	"path/filepath"
-	"syscall"
 
-	"github.com/lwch/tlc/proto"
+	"github.com/lwch/runtime"
 )
 
-type Container struct {
-	rootfs      string
-	procMounted bool
-	devMounted  bool
-	sysMounted  bool
-	ptsMounted  bool
+type container struct {
+	ID       string `json:"id"`
+	Name     string `json:"name"`
+	Rootfs   string `json:"rootfs"`
+	Pid      int    `json:"pid"`
+	Bootable bool   `json:"bootable"`
+	cmd      *exec.Cmd
 }
 
-func (ct *Container) pivotRoot(newroot string) error {
-	putold := filepath.Join(newroot, "/.pivot_root")
-
-	err := syscall.Mount(newroot, newroot, "", syscall.MS_BIND|syscall.MS_REC, "")
+func newContainer(name, rootfs string) *container {
+	id, err := runtime.UUID(16, "0123456789abcdef")
 	if err != nil {
-		return err
+		return nil
 	}
-
-	err = os.MkdirAll(putold, 0700)
-	if err != nil {
-		return err
+	return &container{
+		ID:     id,
+		Name:   name,
+		Rootfs: rootfs,
 	}
-	defer os.RemoveAll(putold)
-
-	err = syscall.PivotRoot(newroot, putold)
-	if err != nil {
-		return err
-	}
-
-	err = os.Chdir("/")
-	if err != nil {
-		return err
-	}
-
-	putold = "/.pivot_root"
-	return syscall.Unmount(putold, syscall.MNT_DETACH)
 }
 
-func (sv *Service) createContainer(cfg *proto.RunConfig) {
+func (ct *container) save(dir string) error {
+	err := os.MkdirAll(dir, 0755)
+	if err != nil {
+		return err
+	}
+	dir = filepath.Join(dir, ct.ID+".json")
+	f, err := os.Create(dir)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+	return json.NewEncoder(f).Encode(ct)
 }

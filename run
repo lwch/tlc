@@ -1,0 +1,4 @@
+#!/bin/sh
+./build
+sudo systemctl restart tlcd.service
+sudo ./bin/tlc run --dir debian

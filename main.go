@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/lwch/tlc/cmd/rm"
 	"github.com/lwch/tlc/cmd/run"
+	"github.com/lwch/tlc/container"
 	"github.com/lwch/tlc/tlcd"
 	"github.com/spf13/cobra"
 )
@@ -17,6 +18,7 @@ func init() {
 	run.RegCmd(rootCmd)
 	rm.RegCmd(rootCmd)
 	tlcd.RegCmd(rootCmd)
+	container.RegCmd(rootCmd)
 }
 
 func main() {

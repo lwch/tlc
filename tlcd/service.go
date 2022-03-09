@@ -10,6 +10,7 @@ import (
 	"github.com/lwch/logging"
 	"github.com/lwch/runtime"
 	"github.com/lwch/tlc/proto"
+	"github.com/lwch/tlc/utils"
 	"github.com/spf13/cobra"
 	"google.golang.org/grpc"
 )
@@ -23,14 +24,16 @@ func RegCmd(root *cobra.Command) {
 		Arguments:   []string{"service", "run"},
 	}
 
-	exeDir, err := os.Executable()
-	runtime.Assert(err)
+	exeDir := utils.ExecDir()
 	workDir := filepath.Dir(exeDir)
 
-	svc, err := service.New(&Service{
+	svr := &Service{
 		WorkDir:    workDir,
 		Executable: exeDir,
-	}, cfg)
+		cts:        make(map[string]*container),
+	}
+
+	svc, err := service.New(svr, cfg)
 	runtime.Assert(err)
 
 	cmd := &cobra.Command{
@@ -62,7 +65,7 @@ type Service struct {
 	WorkDir    string
 	Executable string
 	listener   net.Listener
-	containers map[string]*Container
+	cts        map[string]*container
 }
 
 func (sv *Service) listen() (net.Listener, error) {
@@ -77,6 +80,9 @@ func (sv *Service) run() {
 	defer l.Close()
 
 	sv.listener = l
+
+	// TODO: remove
+	os.RemoveAll(filepath.Join(sv.WorkDir, "containers"))
 
 	svr := grpc.NewServer()
 	proto.RegisterServiceServer(svr, sv)
