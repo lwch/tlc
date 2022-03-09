@@ -12,7 +12,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var tty bool
 var name string
 var remove bool
 var img string
@@ -28,7 +27,6 @@ func RegCmd(root *cobra.Command) {
   --dir argument supported container directory of container.yaml config file`,
 		Run: do,
 	}
-	cmd.Flags().BoolVar(&tty, "tty", false, "Allocate a pseudo-TTY")
 	cmd.Flags().StringVar(&name, "name", "", "Assign a name to the container")
 	cmd.Flags().BoolVar(&remove, "rm", false, "Automatically remove the container when it exits")
 	cmd.Flags().StringVar(&img, "img", "", "Image file directory")
